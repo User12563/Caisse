@@ -1,0 +1,23 @@
+!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion de Budget</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Gestion de Budget</h1>
+    <form action="/calculate" method="post">
+        <label for="wallet">Entrez votre budget:</label>
+        <input type="number" id="wallet" name="wallet" step="0.01" required><br><br>
+        <label for="articles">Entrez les montants des articles (séparés par des virgules):</label>
+        <input type="text" id="articles" name="articles" required><br><br>
+        <label for="carte_de_fidelite">Disposez-vous d'une carte de fidélité ?</label>
+        <select id="carte_de_fidelite" name="carte_de_fidelite">
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+        </select><br><br>
+        <button type="submit">Calculer</button>
+    </form>
+</body>
+</html>
