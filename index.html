@@ -2,22 +2,118 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Gestion de Budget</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Dépenses</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            color: #e63946;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 5px 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #e63946;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #d62828;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Gestion de Budget</h1>
-    <form action="/calculate" method="post">
-        <label for="wallet">Entrez votre budget:</label>
-        <input type="number" id="wallet" name="wallet" step="0.01" required><br><br>
-        <label for="articles">Entrez les montants des articles (séparés par des virgules):</label>
-        <input type="text" id="articles" name="articles" required><br><br>
-        <label for="carte_de_fidelite">Disposez-vous d'une carte de fidélité ?</label>
-        <select id="carte_de_fidelite" name="carte_de_fidelite">
-            <option value="oui">Oui</option>
+    <div class="container">
+        <h1>Calculateur de Dépenses</h1>
+        <label for="wallet">Montant dans le portefeuille :</label>
+        <input type="number" id="wallet" placeholder="Entrez le montant">
+
+        <label for="articles">Prix des articles :</label>
+        <input type="number" class="article" placeholder="Entrez le prix de l'article">
+        <button onclick="addArticle()">Ajouter un article</button>
+
+        <label for="carte_de_fidelite">Carte de fidélité :</label>
+        <select id="carte_de_fidelite">
             <option value="non">Non</option>
-        </select><br><br>
-        <button type="submit">Calculer</button>
-    </form>
+            <option value="oui">Oui</option>
+        </select>
+
+        <button onclick="calculate()">Calculer</button>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        let articles = [];
+
+        function addArticle() {
+            const articleInput = document.querySelector('input.article');
+            const articlePrice = parseFloat(articleInput.value);
+            if (!isNaN(articlePrice) && articlePrice > 0) {
+                articles.push(articlePrice);
+                articleInput.value = '';
+                alert('Article ajouté : ' + articlePrice + ' €');
+            } else {
+                alert('Veuillez entrer un prix valide.');
+            }
+        }
+
+        function calculate() {
+            const wallet = parseFloat(document.getElementById('wallet').value);
+            const carteDeFidelite = document.getElementById('carte_de_fidelite').value;
+            let total = articles.reduce((acc, curr) => acc + curr, 0);
+
+            if (carteDeFidelite === 'oui') {
+                total *= 0.9;
+            }
+
+            const reste = wallet > total ? wallet - total : 0;
+            const manque = total > wallet ? total - wallet : 0;
+
+            document.getElementById('result').innerHTML = `
+                <p>Total des articles : ${total.toFixed(2)} €</p>
+                <p>Reste : ${reste.toFixed(2)} €</p>
+                <p>Manque : ${manque.toFixed(2)} €</p>
+                <p>Carte de fidélité : ${carteDeFidelite}</p>
+            `;
+        }
+    </script>
 </body>
 </html>
